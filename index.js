@@ -10,137 +10,136 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', (process.env.PORT || 9001));
 
 app.get('/', function(req, res){
-  res.send('It works!');
+	res.send('It works!');
 });
 
 
 app.get('/:sticker', function(req, res){
 
-  console.log('incoming request');
-  console.log(req.params.sticker);
+	console.log('incoming request');
+	console.log(req.params.sticker);
 
-  var stickerKeyword = req.params.sticker;
+	var stickerKeyword = req.params.sticker;
 
-  // var data = JSON.parse(body);
+	// var data = JSON.parse(body);
 
-  var parsed_url = url.format({
-    pathname: 'http://www.comicdrop.com/api/v1/stickers',
-    query: {
-      keywords: stickerKeyword
-    }
-  })
+	var parsed_url = url.format({
+		pathname: 'http://www.comicdrop.com/api/v1/stickers',
+		query: {
+			keywords: stickerKeyword
+		}
+	})
 
-  console.log('parsed_url : ', parsed_url);
-
-
-  request(parsed_url, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var data = JSON.parse(body);
-
-      console.log('data', data);
-
-      // get sticker id 
-
-      var firstStickerID = data.stickers[0].id;
-      console.log('firstStickerID', firstStickerID);
+	console.log('parsed_url : ', parsed_url);
 
 
-      // 'http://www.comicdrop.com/api/v1/stickers/:id/:size'
-      // format new request for sticker image 
-      // var sticker_url = url.format({
-      //   pathname: 'http://www.comicdrop.com/api/v1/stickers/',
-      //   id: firstStickerID
-      // })
+	request(parsed_url, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			var data = JSON.parse(body);
 
-      var sticker_url = 'http://www.comicdrop.com/api/v1/stickers/';
+			console.log('data', data);
 
-      sticker_url += firstStickerID;
-      sticker_url += '/thumbnail';
+			// get sticker id 
 
-        console.log('sticker_url : ', sticker_url);
+			var firstStickerID = data.stickers[0].id;
+			console.log('firstStickerID', firstStickerID);
 
-        // request(sticker_url, function(err, response,body){
-        //   if (!error && response.statusCode == 200) {
-        //       console.log('success what is body ', body);
-        //   }
-        // })
 
-      // var first_url = data.response.hits[0].result.url;
+			// 'http://www.comicdrop.com/api/v1/stickers/:id/:size'
+			// format new request for sticker image 
+			// var sticker_url = url.format({
+			//   pathname: 'http://www.comicdrop.com/api/v1/stickers/',
+			//   id: firstStickerID
+			// })
 
-      var body = {
-        response_type: "in_channel",
-        text: sticker_url
-      };
+			var sticker_url = 'http://www.comicdrop.com/api/v1/stickers/';
 
-      res.send(body);
-    }
-  });
+			sticker_url += firstStickerID;
+			sticker_url += '/thumbnail';
+
+				console.log('sticker_url : ', sticker_url);
+
+				// request(sticker_url, function(err, response,body){
+				//   if (!error && response.statusCode == 200) {
+				//       console.log('success what is body ', body);
+				//   }
+				// })
+
+			// var first_url = data.response.hits[0].result.url;
+
+			var body = {
+				response_type: "in_channel",
+				text: sticker_url
+			};
+
+			res.send(body);
+		}
+	});
 
 });
 
 app.post('/', function(req, res){
 
-  
-
-  console.log('incoming request');
-  console.log(req.body.text);
-
-  var stickerKeyword = req.body.text;
-
-  // var data = JSON.parse(body);
-
-  var parsed_url = url.format({
-    pathname: 'http://www.comicdrop.com/api/v1/stickers',
-    query: {
-      keywords: stickerKeyword
-    }
-  })
-
-  console.log('parsed_url : ', parsed_url);
 
 
-  request(parsed_url, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var data = JSON.parse(body);
+	console.log('incoming request');
+	console.log(req.body.text);
 
-      console.log('data', data);
+	var stickerKeyword = req.body.text;
 
-      // get sticker id 
+	// var data = JSON.parse(body);
 
-      var firstStickerID = data.stickers[0].id;
-      console.log('firstStickerID', firstStickerID);
+	var parsed_url = url.format({
+		pathname: 'http://www.comicdrop.com/api/v1/stickers',
+		query: {
+			keywords: stickerKeyword
+		}
+	})
+
+	console.log('parsed_url : ', parsed_url);
 
 
-      // 'http://www.comicdrop.com/api/v1/stickers/:id/:size'
-      // format new request for sticker image 
-      // var sticker_url = url.format({
-      //   pathname: 'http://www.comicdrop.com/api/v1/stickers/',
-      //   id: firstStickerID
-      // })
+	request(parsed_url, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			var data = JSON.parse(body);
 
-      var sticker_url = 'http://www.comicdrop.com/api/v1/stickers/';
+			console.log('data', data);
 
-      sticker_url += firstStickerID;
-      sticker_url += '/thumbnail';
+			var firstStickerID = undefined;
 
-        console.log('sticker_url : ', sticker_url);
+			// get sticker id 
 
-        // request(sticker_url, function(err, response,body){
-        //   if (!error && response.statusCode == 200) {
-        //       console.log('success what is body ', body);
-        //   }
-        // })
+			if (data.stickers[0]){
 
-      // var first_url = data.response.hits[0].result.url;
+				firstStickerID = data.stickers[0].id;
+				
+				var sticker_url = 'http://www.comicdrop.com/api/v1/stickers/';
+						sticker_url += firstStickerID;
+						sticker_url += '/thumbnail';
 
-      var body = {
-        response_type: "in_channel",
-        text: sticker_url
-      };
+				// console.log('sticker_url : ', sticker_url);
 
-      res.send(body);
-    }
-  });
+				var body = {
+					response_type: "in_channel",
+					text: sticker_url
+				};
+
+				res.send(body);
+			} else {
+
+				var body = {
+					response_type: "in_channel",
+					text: 'sorry no stickers dog'
+				};
+
+				res.send(body);
+
+
+			}
+
+
+		}
+	});
 
 });
 
@@ -171,5 +170,5 @@ app.post('/', function(req, res){
 // });
 
 app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+	console.log('Node app is running on port', app.get('port'));
 });
