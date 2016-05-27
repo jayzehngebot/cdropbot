@@ -78,29 +78,97 @@ app.get('/:sticker', function(req, res){
 
 });
 
-app.post('/post', function(req, res){
+app.post('/', function(req, res){
+
+  
+
+  console.log('incoming request');
+  console.log(req.body.text);
+
+  var stickerKeyword = req.body.text;
+
+  // var data = JSON.parse(body);
+
   var parsed_url = url.format({
-    pathname: 'https://api.genius.com/search',
+    pathname: 'http://www.comicdrop.com/api/v1/stickers',
     query: {
-      access_token: process.env.GENIUS_ACCESS,
-      q: req.body.text
+      keywords: stickerKeyword
     }
-  });
+  })
+
+  console.log('parsed_url : ', parsed_url);
+
 
   request(parsed_url, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       var data = JSON.parse(body);
-      var first_url = data.response.hits[0].result.url;
+
+      console.log('data', data);
+
+      // get sticker id 
+
+      var firstStickerID = data.stickers[0].id;
+      console.log('firstStickerID', firstStickerID);
+
+
+      // 'http://www.comicdrop.com/api/v1/stickers/:id/:size'
+      // format new request for sticker image 
+      // var sticker_url = url.format({
+      //   pathname: 'http://www.comicdrop.com/api/v1/stickers/',
+      //   id: firstStickerID
+      // })
+
+      var sticker_url = 'http://www.comicdrop.com/api/v1/stickers/';
+
+      sticker_url += firstStickerID;
+      sticker_url += '/thumbnail';
+
+        console.log('sticker_url : ', sticker_url);
+
+        // request(sticker_url, function(err, response,body){
+        //   if (!error && response.statusCode == 200) {
+        //       console.log('success what is body ', body);
+        //   }
+        // })
+
+      // var first_url = data.response.hits[0].result.url;
 
       var body = {
         response_type: "in_channel",
-        text: first_url
+        text: sticker_url
       };
 
       res.send(body);
     }
   });
+
 });
+
+
+// EXAMPLE
+// app.post('/post', function(req, res){
+//   var parsed_url = url.format({
+//     pathname: 'https://api.genius.com/search',
+//     query: {
+//       access_token: process.env.GENIUS_ACCESS,
+//       q: req.body.text
+//     }
+//   });
+
+//   request(parsed_url, function (error, response, body) {
+//     if (!error && response.statusCode == 200) {
+//       var data = JSON.parse(body);
+//       var first_url = data.response.hits[0].result.url;
+
+//       var body = {
+//         response_type: "in_channel",
+//         text: first_url
+//       };
+
+//       res.send(body);
+//     }
+//   });
+// });
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
